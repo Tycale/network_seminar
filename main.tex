@@ -1,5 +1,4 @@
-\documentclass[10pt,journal,compsoc]{IEEEtran}
-
+\documentclass[journal,compsoc]{IEEEtran}
 
 \usepackage{graphicx}
 \usepackage{mathtools}
@@ -12,6 +11,9 @@
 \usepackage{attrib}
 
 \hyphenation{op-tical net-works semi-conduc-tor}
+
+\newcommand{\ws}{WebSocket~}
+
 
 
 \begin{document}
@@ -29,8 +31,21 @@
 %\IEEEdisplaynontitleabstractindextext
 
 \begin{abstract}
-The most common way to get some information and communicate through the internet is via the Hypertext Transfer Protocol (HTTP). Over time, the shared media sent through this communication system have evolved. We went from text to images and images to video. And interactions between clients and servers have evolved too. We went from passive customers who receives informations to active clients who want to communicate in real time. The original HTTP was never designed to achieve those ends. The market has found some tricks to bypass these limitations as AJAX (Asynchronous JavaScript and XML), AJAX long polling, Iframe, etc. But the HTML5 initiative introduced a real solution to this problem : WebSocket JavaScript. This solution brings socket to the web, so a full-duplex communication can be etablished between clients to the server. This paper tries to find out how this alternative is viable and efficient compared to older techniques used. \cite{http-rfc}
+The most common way to get some information and communicate through the internet is via the Hypertext Transfer Protocol (HTTP).
+Over time, the shared media sent through this communication system have evolved.
+It started from text to images and videos.
+And interactions between clients and servers have evolved too.
+We went from passive customers who receives informations to active clients that wants to communicate in real-time.
+The original HTTP was never designed to achieve those needs.
+The market found some tricks to bypass these limitations as AJAX (Asynchronous JavaScript and XML), AJAX long polling, Iframe, etc.
+But the HTML5 initiative introduced a real solution to this problem : \ws JavaScript.
+This solution brings socket to the web, so a full-duplex communication can be etablished between clients to the server.
+This paper tries to find out how this alternative is viable and efficient compared to older techniques used. \cite{http-rfc}
+First, the alternative solutions that have been used are presented.
+Then, a comparison with the \ws is performed, and the advantages of the \ws protocol are shown.
+Finally, a point is dedicated to the \ws security.
 \end{abstract}
+
 
 \section{Historical analysis}
 
@@ -42,11 +57,24 @@ The most common way to get some information and communicate through the internet
 
 \subsection{Specification of AJAX}
 
-\subsection{Specification of AJAX Long-Polling}
+\subsubsection{AJAX Long-Polling}
+
+
+\subsection{\ws}
+
+\subsubsection{Principles}
+
+\subsubsection{Comparison with alternatives}
+
+\subsubsection{Performance}
+
+\subsubsection{Security}
+
+
 
 \section{Conclusion}
 
-From a network point of view, websoket …
+From a network point of view, \ws …
 
 
 \ifCLASSOPTIONcaptionsoff
