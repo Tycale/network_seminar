@@ -1,0 +1,61 @@
+\documentclass[9pt,journal,compsoc]{IEEEtran}
+
+
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage{framed}
+\usepackage{attrib}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\author{\IEEEauthorblockN{Thibault G\'erondal, Michaël Heraly}}
+
+\title{Survey paper: Websocket}
+
+\date{Tuesday, 27 Oct 2015}
+
+\maketitle
+\IEEEpeerreviewmaketitle
+
+
+%\IEEEdisplaynontitleabstractindextext
+
+\begin{abstract}
+The most common way to get some information and communicate through the internet is via the Hypertext Transfer Protocol (HTTP). Over time, the shared media sent through this communication system have evolved. We went from text to images and images to video. And interactions between clients and servers have evolved too. We went from passive customers who receives informations to active clients who want to communicate in real time. The original HTTP was never designed to achieve those ends. The market has found some tricks to bypass these limitations as AJAX (Asynchronous JavaScript and XML), AJAX long polling, Iframe, etc. But the HTML5 initiative introduced a real solution to this problem : WebSocket JavaScript. This solution brings socket to the web, so a full-duplex communication can be etablished between clients to the server. This paper tries to find out how this alternative is viable and efficient compared to older techniques used. \cite{http-rfc}
+\end{abstract}
+
+\section{Historical analysis}
+
+
+
+\IEEEPARstart{B}{efore} analysing Websocket, let see what has been used before to acheive a full-duplex communication.
+
+\subsection{Specification of HTTP}
+
+\subsection{Specification of AJAX}
+
+\subsection{Specification of AJAX Long-Polling}
+
+\section{Conclusion}
+
+From a network point of view, websoket …
+
+
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{bibi}
+
+
+\end{document}
