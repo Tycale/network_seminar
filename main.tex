@@ -41,7 +41,7 @@ The market found some tricks to bypass these limitations.
 But the HTML5 initiative introduced a real solution to this problem : \ws{} JavaScript.
 This solution brings socket to the web, so a full-duplex communication can be etablished between clients to the server.
 % This paper is only bullshit, but let's try to sell it.
-In this survey paper, we describe older techniques used that can achieve a full-duplex communication as \ws{} can do before describing \ws{} itself.
+In this survey paper, we describe older techniques used that can achieve a full-duplex communication before describing \ws{} itself.
 Then, we explore some experiments about how \ws{} is efficient compared to these older techniques.
 Finally, a point is dedicated to the security issues of \ws.
 \end{abstract}
@@ -49,10 +49,10 @@ Finally, a point is dedicated to the security issues of \ws.
 
 \section{Introduction}
 
-The Hypertext Transfer Protocol (HTTP) is a stateless request-response protocol in the server-client computing model. 
-The client submits an HTTP request message and the server provides a response (HTML files, images, etc.) \cite{rfc2616}. 
-With the evolution of the popularity of the web, applications have multiplied.
-And the need of interactivity between the client and the server was increasingly felt. 
+The Hypertext Transfer Protocol (HTTP) is a stateless request-response protocol in the server-client computing model.
+The client submits an HTTP request message and the server provides a response (HTML files, images, etc.) \cite{rfc2616}.
+With the evolution of the popularity of the web, the number of web applications has risen significantly.
+And the need of interactivity between the client and the server was increasing.
 In the original HTTP specifications, interactivity was only possible by loading an entire page in order to upload information to the server or to receive new informations from the server.
 But new features to web browsers have arisen in order to successfully add interactivity whithout (re)loading pages.
 Among these, two Javascript API were were successively in web browsers : XMLHttpRequest and \ws.
@@ -69,7 +69,7 @@ However, doing  that generates a lot of overhead as each request will have a HTT
 
 \subsection{The long polling version}
 
-The long polling also uses the XMLHttpRequest (XHR) Object. 
+The long polling also uses the XMLHttpRequest (XHR) Object.
 But, the client doesn't have to poll periodically the server as the web server hold the HTTP request open until it has new data to send to the client.
 This reduces the amount of useless data transfers and improve the update delay as we can see in Fig.~\ref{poll_vs_lpoll}.
 
@@ -83,12 +83,12 @@ This reduces the amount of useless data transfers and improve the update delay a
 \section{\ws{} protocol}
 The \ws{} protocol was standardized by the IETF as RFC 6455 in 2011 \cite{rfc6455}, and is being standardized by the World Wide Web Consortium (W3C).
 
- 
+
 
 \section{Performance of WebSocket}
 
 
-\section{\ws protocol}
+\section{\ws{} protocol}
 
 
 
