@@ -1,4 +1,6 @@
 \documentclass[journal,compsoc]{IEEEtran}
+\usepackage[UKenglish]{babel}
+\usepackage[utf8]{inputenc}
 
 \usepackage{graphicx}
 \usepackage{mathtools}
@@ -12,15 +14,21 @@
 
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+% Styling commands
+\newcommand{\tbf}[1]{\textbf{#1}}
+\newcommand{\tit}[1]{\textit{#1}}
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+% Document-specific commands
 \newcommand{\ws}{WebSocket}
 
 
 
 \begin{document}
 
-\author{\IEEEauthorblockN{Thibault G\'erondal, Michael Heraly}}
+\author{\IEEEauthorblockN{Thibault Gérondal, Michaël Heraly}}
 
-\title{Survey paper: Websocket}
+\title{Survey paper: \ws}
 
 \date{Tuesday, 27 Oct 2015}
 
@@ -77,8 +85,8 @@ This reduces the amount of useless data transfers and improve the update delay a
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{poll_vs_lpoll}
   \label{poll_vs_lpoll}
+  \includegraphics[width=\linewidth]{poll_vs_lpoll}
   \caption{periodic polling (left) versus long polling (right)}
 \end{figure}
 
@@ -92,6 +100,27 @@ But \ws{} remains a fully functional protocol that can be used outside the brows
 
 \subsection{The \ws{} header}
 
+The \ws{} frame structure is shown in Figure \ref{fig:websocket_frame}.
+
+\begin{figure}
+    \centering
+    \label{fig:websocket_frame}
+    \includegraphics[width=\linewidth]{websocket_frame.png}
+    \caption{\ws{} frame structure (from \cite{HighPerfBrowserNetworking:websocket})}
+\end{figure}
+
+The \ws{} frame structure is composed of different parts \cite{HighPerfBrowserNetworking:websocket} \cite{performanceEvaluationOfWebsocketProtocol} :
+\begin{LaTeXdescription}    % 'description' environment doesn't display well for IEEEtran
+    \item[FIN] indicates whether the frame is a final fragment of a message.
+    \item[Opcode] indicates the type of the payload data: binary, textual, or protocol-level signaling (e.g. \ttt{close}, \ttt{ping}, \ttt{pong}).
+    \item[Mask] indicates whether the payload data is obfuscated (only for messages sent from the client to the server).
+    \item[Length] indicates the payload length. If this value is between 0 and 125, this is the actual length.
+                    If it is set to 126, the next 2 bytes represent a 16-bit unsigned integer indicating the frame length.
+                    If it is set to 127, the next 8 bytes represent a 64-bit unsigned integer indicating the frame length.
+    \item[Masking key] used to disable unwanted payload processing by network intermediaries, like HTTP proxies \cite{performanceEvaluationOfWebsocketProtocol}.
+                    This part is omitted in server-originated frames, as the masking is not necessary.
+    \item[Payload] corresponds to the application data, or custom data if the client and server use a protocol extension.
+\end{LaTeXdescription}
 
 
 
