@@ -143,7 +143,13 @@ Establishing a \ws{} session takes 3.7 times longer than establishing a TCP conn
 
 \section{\ws{} protocol}
 
-The \ws{} protocol uses the HTTP's \ttt{Upgrade} mechanism as shown in Figure \ref{fig:websocket_connection}.
+The \ws{} protocol is an application-level protocol built on top of TCP \cite{rfc6455}.
+It enables bidirectional data transport in Web sessions.
+The \ws{} protocol can be used as a Web-based near real-time communication channel.
+
+As the \ws{} is a TCP-based protocol, it needs a TCP connection to be established between the client and the server before any \ws-based interaction can be performed.
+As shown on figure \ref{fig:websocket_connection}, the first step is to create a TCP connection, whose handshaking needs three messages between the client and the server.
+At this point, both have access to the plain TCP protocol and they can send aplication-specific data to each other.
 
 \begin{figure}
     \centering
