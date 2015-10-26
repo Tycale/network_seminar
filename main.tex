@@ -190,7 +190,19 @@ The connection can then be used as a two-way communication channel where the cli
 
 \section{Conclusion}
 
-From a network point of view, \ws …
+In this paper, we covered the different solutions that were used prior to the \ws{}.
+These include HTTP polling and HTTP long-polling.
+Then, we introduced the \ws{}, which is composed by the \ws{} JavaScript API and the underlying \ws{} protocol.
+We saw that the \ws{} protocol was based on TCP.
+We presented how two hosts could connect to each other to create a \ws{} session.
+We also exposed the \ws{} header to explain the \ws{} frame structure.
+We ended the paper by comparing the technology with the prior solutions, with a focus on the throughput and the latency.
+It turns out the \ws{} causes a slightly lower performance compared to the plain TCP protocol.
+It causes some overhead and has a higher latency than a plain TCP connection.
+But it is still better than the alternative solutions, as HTTP polling and HTTP long-polling.
+The overhead caused by the \ws{} is negligible for practical use, and for situations where a lot of data are sent between the client and the server, the cost of the initial HTTP handshaking is amortized by the large number of payload transfers.
+
+Finally, the \ws{} protocol is a useful addition to the Web which brings a full-duplex communication that is more efficient than the other solutions that try to simulate an equivalent behaviour in HTTP-based applications.
 
 
 \ifCLASSOPTIONcaptionsoff
