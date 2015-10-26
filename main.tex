@@ -95,8 +95,16 @@ This reduces the amount of useless data transfers and improve the update delay a
 \section{\ws{} protocol}
 The \ws{} protocol was standardized by the IETF as RFC 6455 in 2011 \cite{rfc6455}.
 This protocol was designed to bring bidirectional, message-oriented streaming of text and binary data between web browsers and web servers.
+
 As it was designed for the Web, this protocol copes with existing HTTP infrastructure, which means to work over HTTP ports 80 and 443.
-But \ws{} remains a fully functional protocol that can be used outside the browser.
+As the \ws{} protocol is backward compatible with the existing Web infrastructure, it inherits from all its benefits.
+First of all, the Web browsers support the technology natively, including an origin-based security model.
+The Web infrastructure provides URL-based endpoints, which allows to run multiple services on a single TCP port.
+It also removes the length limits imposed by plain TCP protocol.
+Finally, it allows the traversal of proxies and firewalls.
+
+The \ws{} protocol remains a fully functional protocol that can be used outside the browser.
+
 
 \subsection{The \ws{} header}
 
