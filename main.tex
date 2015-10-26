@@ -1,4 +1,4 @@
-\documentclass[journal,compsoc]{IEEEtran}
+\documentclass[10pt,journal,compsoc]{IEEEtran}
 \usepackage[UKenglish]{babel}
 \usepackage[utf8]{inputenc}
 
@@ -90,7 +90,7 @@ This reduces the amount of useless data transfers and improve the update delay.
   \label{poll_vs_lpoll}
 \end{figure}
 
-In Fig.~\ref{poll_vs_lpoll}, on the left, the client periodically polls every ``polling interval'' the server to retrieve updates. When an update occus on the server side, the client have to wait the next polling to be aware of it. On the right, with long polling, the server keeps open the connection until the update occurs. The periodic polling introduces a delay that long polling can avoid.
+In Fig.~\ref{poll_vs_lpoll}, on the left, the client periodically polls every ``polling interval'' the server to retrieve updates. When an update occurs on the server side, the client have to wait the next polling to be aware of it. On the right, with long polling, the server keeps open the connection until the update occurs. The periodic polling introduces a delay that long polling can avoid. Also, the first polling of the periodic polling is superfluous as it generates data on the network for no real new input.
 
 \section{\ws{} protocol}
 The \ws{} protocol was standardized by the IETF as RFC 6455 in 2011 \cite{rfc6455}.
