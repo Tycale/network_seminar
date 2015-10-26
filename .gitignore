@@ -4,4 +4,9 @@
 *.blg
 *.log
 *.synctex.gz
+
+# Do not track the PDF
 main.pdf
+
+# OS X files
+.DS_Store

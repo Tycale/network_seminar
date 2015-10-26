@@ -80,7 +80,7 @@ However, doing  that generates a lot of overhead as each request will have a HTT
 \subsection{The long polling version}
 
 The long polling also uses the XMLHttpRequest (XHR) Object.
-But, the client doesn't have to poll periodically the server as the web server hold the HTTP request open until it has new data to send to the client, or a timeout expires.
+But, the client doesn't have to poll periodically the server as the web server holds the HTTP request open until it has new data to send to the client, or a timeout expires.
 This reduces the amount of useless data transfers and improve the update delay as shown in Fig.~\ref{poll_vs_lpoll}.
 
 \begin{figure}
@@ -134,6 +134,16 @@ Establishing a \ws{} session takes 3.7 times longer than establishing a TCP conn
 
 
 \section{\ws{} protocol}
+
+The \ws{} protocol uses the HTTP \ttt{Upgrade}-based handshake as shown in Figure \ref{fig:websocket_connection}.
+
+\begin{figure}
+    \centering
+    \label{fig:websocket_connection}
+    \includegraphics[width=\linewidth]{websocket_tcp_diagram.png}
+    \caption{\ws-over-TCP sequence diagram (from \cite{performanceEvaluationOfWebsocketProtocol})}
+\end{figure}
+
 
 \subsection{Presentation}
 
