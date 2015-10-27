@@ -92,6 +92,7 @@ This reduces the amount of useless data transfers and improves the update delay.
 In Fig.~\ref{poll_vs_lpoll}, on the left, the client periodically polls the server to retrieve updates. This is shown on the figure as the ``polling interval''. When an update occurs on the server side, the client has to wait the next polling to be aware of it. On the right, with long polling, the server keeps the connection open until the update occurs. The periodic polling introduces a delay that long polling can avoid. Also, the first polling of the periodic polling is superfluous as it generates data on the network for no real new input.
 
 \section{\ws{} protocol}
+\label{sec:ws}
 The \ws{} protocol was standardized by the IETF as RFC 6455 in 2011 \cite{rfc6455}.
 This protocol was designed to bring bidirectional, message-oriented streaming of texts and binary data between web browsers and web servers.
 
@@ -124,10 +125,9 @@ The \ws{} frame structure is composed of different parts \cite{HighPerfBrowserNe
                     If it is set to 126, the next 2 bytes represent a 16-bit unsigned integer indicating the frame length.
                     If it is set to 127, the next 8 bytes represent a 64-bit unsigned integer indicating the frame length.
     \item[Masking key] is used to disable unwanted payload processed by network intermediaries, like HTTP proxies \cite{performanceEvaluationOfWebsocketProtocol}.
-                    This part is omitted in server-originated frames, as the masking is not necessary.
+                    This part is omitted in server-originated frames, as the masking is not necessary. See section~\ref{sec:key} for more informations.
     \item[Payload] corresponds to the application data, or custom data if the client and server use a protocol extension.
 \end{LaTeXdescription}
-
 
 
 %\section{\ws{} Javascript API}
@@ -307,13 +307,38 @@ The keep-alive can spend a lot of superfluous traffic, especially if the exchang
 
 \section{Security}
 
+As said in section~\ref{sec:ws}, \ws{} benefits from security model of the HTTP but also inherits problems thereby.
 
-\subsection{Proxies}
+\subsection{Same origin security}
 
-\subsection{CORS}
+During the handshake, the browser adds the Origin header to the HTTP Upgrade request.
+The server can accept or deny the request based on this header.
+Also, even if the origin is not the same, it is possible to establish a connection tanks to the Cross Origin Request Sharing (CORS) \cite{talkingtoyourself}.
+The principle is the same as in HTTP.
+
+\subsection{Proxies and black boxes}
+\label{sec:key}
+As the web is the most common way for communicate on internet, there is a lot of proxies and black boxes that intercepts traffic going through port 80.
+Theses intermediaries might not understand what happens once the negotiation for \ws{} Upgrade is achieved.
+And this can be problematic..
+When a proxy or black box doesn't understand what happened, the traffic can be altered or discarded.
+This will make the \ws{} communication unusable.
+This poses a problem for the progress of the adoption of the \ws s.
+
+But the most undesired behavior was that a proxy bufferise the \ws{} frames.
+As described in \cite{talkingtoyourself}, if a proxy is doing such a thing, an attacker can poison the cache of the proxy with malicious payload.
+When a legitimate user behind the proxy want to retrieve the \ws{}, he will get the malicious payload from the poisoned proxy's cache.
+To counter this, a masking key is sent by the client, this key will be used by the server to mask the payload (masking key XOR payload).
+As the client know the masking key, it can decodes the payload and be sure that the payload wasn't modify by any proxies or black boxes. 
+This mechanism defeats the cache poisoning attack.
+
+\subsection{TLS}
+\ws{} supports TLS.
+This is useful to cipher payload but not only.
+As proxies and black boxes can do nothing with TLS communication, by ensuring that a website is using secure \ws{}, it also ensures that no proxy or black box will prevent the connection.
+
 
 \section{Conclusion}
-
 In this paper, we covered the different solutions that were used prior to the \ws{}.
 These include HTTP polling and HTTP long-polling.
 Then, we introduced the \ws{}, which is composed by the \ws{} JavaScript API and the underlying \ws{} protocol.
@@ -321,13 +346,14 @@ We saw that the \ws{} protocol was based on TCP.
 We presented how two hosts could connect to each other to create a \ws{} session.
 We also exposed the \ws{} header to explain the \ws{} frame structure.
 We ended the paper by comparing the technology with the prior solutions, with a focus on the throughput and the latency.
-It turns out that the \ws{} causes a slightly lower performance compared to the plain TCP protocol.
+It turns out that the \ws{} causes lower performance compared to the plain TCP protocol.
 It causes some overhead and has a higher latency than a plain TCP connection.
-However, it is still better than the alternative solutions, as HTTP polling and HTTP long-polling.
+However, it is still better than the alternative solutions, as XHR polling and XHR long-polling.
 The overhead caused by the \ws{} is negligible for practical use, and for situations where a lot of data are sent between the client and the server, the cost of the initial HTTP handshaking is amortized by the large number of payload transfers.
 
-Finally, the \ws{} protocol is a useful addition to the Web, which brings a full-duplex communication that is more efficient than the other solutions thwhichat try to simulate an equivalent behaviour in HTTP-based applications.
+% Rajouter une conclusion sur les quelques points de sécurité abordés
 
+Finally, the \ws{} protocol is a useful addition to the Web, which brings a full-duplex communication that is more efficient than the other solutions which try to simulate an equivalent behavior in HTTP-based applications.
 
 \ifCLASSOPTIONcaptionsoff
   \newpage
