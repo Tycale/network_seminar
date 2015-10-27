@@ -61,7 +61,7 @@ The Hypertext Transfer Protocol (HTTP) is a stateless request-response protocol 
 The client submits an HTTP request message and the server provides a response (HTML files, images, etc.).
 With the growing popularity of the web, the number of web applications has risen significantly, and the need of interactivity between the client and the server is increasing.
 In the original HTTP specifications, interactivity was only possible by loading an entire page in order to upload information to the server or to receive new information from the server.
-New features to web browsers have arisen in order to successfully add interactivity without (re)loading pages.
+New features to web browsers have arisen in order to successfully add interactivity without (re)loading pages \cite{RealTimeMonitoringUsingAJAXAndWebSockets}.
 Among these, two Javascript API were implemented successively in web \mbox{browsers :} XMLHttpRequest and \ws.
 
 
@@ -105,7 +105,7 @@ Finally, it allows the traversal of proxies and firewalls.
 The \ws{} protocol remains a fully functional protocol that can be used outside the browser.
 
 \subsection{The \ws{} header}
-
+\label{sec:ws-header}
 The \ws{} frame structure is shown in Figure \ref{fig:websocket_frame}.
 
 \begin{figure}
@@ -143,10 +143,10 @@ The \ws{} protocol can be used as a Web-based near real-time communication chann
 As the \ws{} is a TCP-based protocol, it needs a TCP connection to be established between the client and the server before any \ws-based interaction can be performed.
 As shown on figure \ref{fig:websocket_connection}, the first step is to create a TCP connection, whose handshaking needs three messages between the client and the server (three-way handshake).
 At this point, both have access to the plain TCP protocol and they can send application-specific data to each other.
-As designed to cope with existing HTTP infrastructure, the client is going to use HTTP to negociate a switch from regular HTTP to the \ws{} protocol for the rest of the session.
+As designed to cope with existing HTTP infrastructure, the client is going to use HTTP to negotiate a switch from regular HTTP to the \ws{} protocol for the rest of the session.
 For doing this, the \ws{} protocol is using the HTTP/1.1 Upgrade header in the request message.
-This header was designed for allowing a client to upgrade from unsecure connection to a secure TLS connection.
-\ws{} has extended the HTTP Upgrade flow with custom WebSocket headers to perform the negotiation \cite{HighPerfBrowserNetworking:websocket}.
+This header was designed for allowing a client to upgrade from insecure connection to a secure TLS connection.
+\ws{} has extended the HTTP Upgrade flow with custom \ws{} headers to perform the negotiation \cite{HighPerfBrowserNetworking:websocket}.
 The client also offers a version of the \ws{} protocol to be used.
 If the server supports the \ws{} protocol, it replies with an HTTP response with the \ttt{101 Switching Protocols} status code.
 From that point, the HTTP-based communication is finished.
@@ -160,13 +160,13 @@ The connection can then be used as a two-way communication channel where the cli
 \end{figure}
 
 
-\section{Performance of WebSocket}
+\section{Performance of \ws{}}
 
 As we have seen in section~\ref{handshake}, establishing a \ws{} session requires at least five messages.
 Making the establishment of a \ws{} connection to take 3.7 times longer than a TCP connection \cite{performanceEvaluationOfWebsocketProtocol}. 
 
 As seen in section~\ref{XHR}, XHR and XHR long polling were the two common used methods to simulate a full-duplex connection.
-To determine whether WebSocket outperforms these, we are going to inspect the latency and the throughput of each of these techniques.
+To determine whether \ws{} outperforms these, we are going to inspect the latency and the throughput of each of these techniques.
 Plus, we are going to see how good \ws{} is doing compared to TCP.
 
 \subsection{Comparing the latency}
@@ -180,7 +180,7 @@ Plus, we are going to see how good \ws{} is doing compared to TCP.
 
 The experimentation in  compares \ws{}, XHR and XHR long polling with different latency in the underlying link.
 
-In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, they propose an experiment to measure the latency induced by the use of WebSockets compared to XHR and XHR long polling.
+In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, they propose an experiment to measure the latency induced by the use of \ws{} compared to XHR and XHR long polling.
 The server receives weather information every 250 ms from a wind sensor and serves it via several ways (WS, XHR and XHR LP).
 To compare the latency, clients and server are synchronized.
 
@@ -189,7 +189,7 @@ This is understandable as the client have to periodically poll the server for ne
 The comparison with XHR is not helpful and will not be considered.
 
 Figure~\ref{fig:comdisp} is taken from the paper, three interesting communication behavior are represented.
-Figure~\ref{fig:comdisp}a illustrates the \ws{} protocol behavior once it has successfully established the socket connection. Each time the server receives a measurement from the sensor, the server can immediately sends the mesurement to the client.
+Figure~\ref{fig:comdisp}a illustrates the \ws{} protocol behavior once it has successfully established the socket connection. Each time the server receives a measurement from the sensor, the server can immediately sends the measurement to the client.
 Figure~\ref{fig:comdisp}b illustrates the XHR long polling behavior with an underlying latency low enough ($< 125 $ms, which corresponds to half the $250$ms observation rate) for the client to establish a poll request that the server will keep until it receives new measurement from the sensor.
 Figure~\ref{fig:comdisp}c illustrates the XHR long polling behavior with an underlying latency higher than $125$ms.
 The client first polls the server, the request arrives at the server before or at exact time a measurement is available.
@@ -217,52 +217,100 @@ This is explained by the fact that the whole experiment was conducted on a small
 \end{figure}
 
 These experiments prove that \ws{} achieves better performance than XHR. But what about \ws{} versus plain TCP ? 
-This expermient was conducted in \cite{roadblock}.
-The setup is a simple web application that is a simple data echo service.
+This experiment was conducted in \cite{roadblock}.
+The setup is a web application that is a simple data echo service.
 Clients send a fixed-size chunk of random data to the server who simply send it back to his respective client.
-Figure~\ref{fig:road} shows the average delays in receiving consecutive data chunks as a function of data chunck size. 
-This experiment is conducted on a 3G cellular data network with three differents protocols : XHR long polling, \ws{} and TCP.
+Figure~\ref{fig:road} shows the average delays in receiving consecutive data chunks as a function of data chunk size. 
+This experiment is conducted on a 3G cellular data network with three different protocols : XHR long polling, \ws{} and TCP.
 We are not going to discuss again the result concerning \ws{} versus XHR long polling.
 We can see that what other tests highlighted remain valid in this experiment.
 The result of TCP versus \ws{} are questioning.
 There is a factor 2-3 increase in delay when using \ws{} as compared to using raw TCP.
-Authors of this study conjecture that the reasons for this additional delay are due to additional buffering time at the client, more chatty protocols, and additional overhead.
-The first point is mentioned in the IETF HTML5 websocket specification ``the implementation MAY delay the actual transmission arbitrarily, e.g., buffering data so as to send fewer IP packets.'' \cite{rfc6455}.
+Authors of this study conjectured that the reasons for this additional delay are due to additional buffering time at the client, more chatty protocols, and additional overhead.
+The first point is mentioned in the IETF HTML5 \ws{} specification ``the implementation MAY delay the actual transmission arbitrarily, e.g., buffering data so as to send fewer IP packets.'' \cite{rfc6455}.
 Also, we can notice that the standard deviation is larger for \ws{} compared to TCP.
-This standard deviation is called the jitter mesurement in networking.
-Authors of \cite{roadblock} make another experiment to mesure the jitter of each of these protocols.
+This standard deviation is called the jitter measurement in networking.
+Authors of \cite{roadblock} make another experiment to measure the jitter of each of these protocols.
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{road_jitter.png}
-    \caption{Delay over 3G cellular data network (from \cite{roadblock})}
+    \caption{Cumulative distribution function of delays between 256-byte chunk arrivals (from \cite{roadblock})}
     \label{fig:road2}
 \end{figure}
 
 For doing this, they measured the delay between successive 256-byte chunk. 
 The results are shown in figure~\ref{fig:road2}, in a cumulative distribution function.
-The figure show that, with TCP, we can expect that more than 90\% of all data chunks will arrive at the client with an inter-chunk delay of 360ms or less. The corresponding numbers for \ws{} and XHR long polling are $760$ms and $1382$ms respectively.
-We can see a large performance gap between TCP, \ws{} and XHR long polling.
+The figure shows that, with TCP, we can expect that more than 90\% of all data chunks will arrive at the client with an inter-chunk delay of 360ms or less. The corresponding numbers for \ws{} and XHR long polling are $760$ms and $1382$ms respectively.
+There is a performance gap between TCP and \ws{} protocol.
+This phenomenon is accentuated by the fact that the size of chunk are small.
+As the transmission delay is short for small chunks, the main factor of the latency depends on the underlying latency and the processing time of protocols.
+To better understand the reason of this gap, we must analyze the generated overhead.
 
-\subsection{Comparing the throughput}
+\subsection{Comparing overhead and throughput}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{road4.png}
+    \caption{Overhead over a traffic-shaped network (from \cite{roadblock})}
+    \label{fig:road4}
+\end{figure}
+
+Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
+To do so, they used a new setup with a dummy network.
+This dummy network will be used to create a traffic-shaped network which restrict total egress bandwidth to 512kbit/sec and introduces a fixed latency of 50ms.
+It will also capture packets to compute the overhead.
+The rest of the setup is the same as before, the size of chunk is fixed and the web service is a simple echoing.
+In figure~\ref{fig:road4}, they have measured the overhead induces by varying the chunks size.
+As we can see, the overhead for XHR long polling is very important.
+For small chunk size, it can be up to ten time the size of the data.
+This is easy to understand as XHR uses HTTP.
+Thus, the HTTP header is included in each request and response in XHR long polling.
+And the HTTP header size is unpredictable as it contains lot of superfluous information in our case as browser cookies.
+It explains why the overhead from the client to the server is more important than the overhead from the server to the client as the client is more likely to add unnecessary header.
+We can see that the overhead factor for \ws{} is more reasonable.
+This overhead is due to the header of the \ws{} protocol described in section~\ref{sec:ws-header}.
+For a chunk of 256-byte transmitted from the client to the server, the XHR long polling imposes a large overhead factor of up to 5.
+When the overhead factor of \ws{} is at 1.16.
 
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{road3.png}
+    \caption{Throughput (from \cite{roadblock})}
+    \label{fig:road3}
+\end{figure}
 
+Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
+To do so, they used the same setup as described before (traffic-shaped network).
+The figure~\ref{fig:road3} shows the net throughput (amount of useful data received, stripped of protocol overhead, in kbits/s) at the client as a function of data chunk sizes.
+We can see that TCP performs better throughput than \ws{} and XHR long polling.
+For a 1kB chunks, TCP achieves a throughput of 78kbits/s as compared to 66kbits and 44 kbits/s in the case of \ws{} and XHR long polling respectively.
+We know that the throughput is dependent of the round trip time and the overhead, so there is no surprise to these results.
 
+In \cite{EV}, authors also analyzed the performance of \ws{} throughput for electric vehicles communicating with \ws{}.
+They have created an android application simulating an electric vehicle.
+The application use the 3G cellular data network to communicate with a server.
+They conclude that \ws{} is inefficient in comparison to regular TCP as TCP requires 40\%-50\% less bit rate than \ws{} for their messages.
+The size of status message of their electric vehicles is about 500 bytes. 
+As the message is shorter, the overhead ratio is higher.
+These results are in agreement with previous.
+The authors highlight the fact that \ws{} can need keep-alive traffic to keep the connection open.
+The keep-alive can spend a lot of superfluous traffic, especially if the exchanged messages are small.
 
-
-\subsection{Comparison with AJAX solutions}
-
-\subsection{Behavior depending on the environment}
-
-
+%To reduce network utilization, they invented three methods in order to aggregate the %data.
+%The first is time sampling, every T second, the EV sends informations.
+%The second is distance sampling, every D meters, the EV sends informations.
+%And the last one is the bundling.
+%The data are sent in bundle.
+%These three parameters are represented as a tuple (T,D,B).
+%For instance, (0, 0, 1) means that there is no periodic and distance sampling and B=1 means that there is no bundling as the bundle contains only one sample.
 
 \section{Security}
 
-\subsection{CORS}
 
 \subsection{Proxies}
 
-
+\subsection{CORS}
 
 \section{Conclusion}
 
