@@ -1,4 +1,4 @@
-\documentclass[10pt,journal,compsoc]{IEEEtran}
+\documentclass[journal,compsoc]{IEEEtran}
 \usepackage[UKenglish]{babel}
 \usepackage[utf8]{inputenc}
 
@@ -11,6 +11,7 @@
 \usepackage{fancyvrb}
 \usepackage{framed}
 \usepackage{attrib}
+\usepackage{todonotes}
 
 \hyphenation{op-tical net-works semi-conduc-tor}
 
@@ -144,7 +145,7 @@ As the \ws{} is a TCP-based protocol, it needs a TCP connection to be establishe
 As shown on figure \ref{fig:websocket_connection}, the first step is to create a TCP connection, whose handshaking needs three messages between the client and the server (three-way handshake).
 At this point, both have access to the plain TCP protocol and they can send application-specific data to each other.
 As designed to cope with existing HTTP infrastructure, the client is going to use HTTP to negotiate a switch from regular HTTP to the \ws{} protocol for the rest of the session.
-For doing this, the \ws{} protocol is using the HTTP/1.1 Upgrade header in the request message.
+For doing this, the \ws{} protocol is using the \mbox{HTTP/1.1} Upgrade header in the request message.
 This header was designed for allowing a client to upgrade from insecure connection to a secure TLS connection.
 \ws{} has extended the HTTP Upgrade flow with custom \ws{} headers to perform the negotiation \cite{HighPerfBrowserNetworking:websocket}.
 The client also offers a version of the \ws{} protocol to be used.
@@ -163,7 +164,7 @@ The connection can then be used as a two-way communication channel where the cli
 \section{Performance of \ws{}}
 
 As we have seen in section~\ref{handshake}, establishing a \ws{} session requires at least five messages.
-Making the establishment of a \ws{} connection to take 3.7 times longer than a TCP connection \cite{performanceEvaluationOfWebsocketProtocol}. 
+Making the establishment of a \ws{} connection to take 3.7 times longer than a TCP connection \cite{performanceEvaluationOfWebsocketProtocol}.
 
 As seen in section~\ref{XHR}, XHR and XHR long polling were the two common used methods to simulate a full-duplex connection.
 To determine whether \ws{} outperforms these, we are going to inspect the latency and the throughput of each of these techniques.
@@ -178,7 +179,7 @@ Plus, we are going to see how good \ws{} is doing compared to TCP.
     \label{fig:comdisp}
 \end{figure*}
 
-The experimentation in  compares \ws{}, XHR and XHR long polling with different latency in the underlying link.
+The experimentation consists of comparing \ws{}, XHR and XHR long polling with different latency in the underlying link.
 
 In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, they propose an experiment to measure the latency induced by the use of \ws{} compared to XHR and XHR long polling.
 The server receives weather information every 250 ms from a wind sensor and serves it via several ways (WS, XHR and XHR LP).
@@ -188,13 +189,13 @@ In this experiment, the XHR without long polling always achieves higher latency.
 This is understandable as the client have to periodically poll the server for new data.
 The comparison with XHR is not helpful and will not be considered.
 
-Figure~\ref{fig:comdisp} is taken from the paper, three interesting communication behavior are represented.
+Figure~\ref{fig:comdisp}, from \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, presents three interesting communication behavior.
 Figure~\ref{fig:comdisp}a illustrates the \ws{} protocol behavior once it has successfully established the socket connection. Each time the server receives a measurement from the sensor, the server can immediately sends the measurement to the client.
 Figure~\ref{fig:comdisp}b illustrates the XHR long polling behavior with an underlying latency low enough ($< 125 $ms, which corresponds to half the $250$ms observation rate) for the client to establish a poll request that the server will keep until it receives new measurement from the sensor.
 Figure~\ref{fig:comdisp}c illustrates the XHR long polling behavior with an underlying latency higher than $125$ms.
 The client first polls the server, the request arrives at the server before or at exact time a measurement is available.
-As a measurement is available, the server sends the sensor message immediately, which close the connection.
-Thus, when the server receives a new poll request from the client, at least one sensor be in the client's queue.
+As a measurement is available, the server sends the sensor message immediately, which closes the connection.
+Thus, when the server receives a new poll request from the client, at least one sensor is in the client's queue.
 The observed latency is greater than the underlying link.
 The long polling is a viable situation as long as the underlying latency is less than half the data measurement rate.
 In the situation (a) and (b) of the figure~\ref{fig:comdisp}, the observed latency is the underlying latency.
@@ -202,11 +203,11 @@ Meaning that XHR long polling can performs as good as \ws{}.
 
 
 
-Another experiment in \cite{collinalatency} is done over a simulated satellite link. They setup a dummy network introducing latency such that the round trip time is fixed at $600$ms. 
-Then the server or the client have to send 100 messages of 39 bytes. The results are similar. 
-For \ws{} the mean latency is about $600$ms, the latency of the dummy network. And for the XHR long polling, the mean latency is about $1200$ms, twice the introduced delay. 
-This make sense as every time the client (resp. server) have to send (resp. receive) a message in XHR long polling, a new connection have to be established before the data can be issued. 
-The standard deviation of these values is low. 
+Another experiment in \cite{collinalatency} is done over a simulated satellite link. They setup a dummy network introducing latency such that the round trip time is fixed at $600$ms.
+Then the server or the client have to send 100 messages of 39 bytes. The results are similar.
+For \ws{} the mean latency is about $600$ms, the latency of the dummy network. And for the XHR long polling, the mean latency is about $1200$ms, twice the delay introduced.
+This makes sense as every time the client (resp. server) has to send (resp. receive) a message in XHR long polling, a new connection has to be established before the data can be issued.
+The standard deviation of these values is low.
 This is explained by the fact that the whole experiment was conducted on a small network without congestion.
 
 \begin{figure}[!ht]
@@ -216,21 +217,22 @@ This is explained by the fact that the whole experiment was conducted on a small
     \label{fig:road}
 \end{figure}
 
-These experiments prove that \ws{} achieves better performance than XHR. But what about \ws{} versus plain TCP ? 
+These experiments shows that \ws{} achieves better performance than XHR.
+But what about \ws{} versus plain TCP ?
 This experiment was conducted in \cite{roadblock}.
 The setup is a web application that is a simple data echo service.
-Clients send a fixed-size chunk of random data to the server who simply send it back to his respective client.
-Figure~\ref{fig:road} shows the average delays in receiving consecutive data chunks as a function of data chunk size. 
-This experiment is conducted on a 3G cellular data network with three different protocols : XHR long polling, \ws{} and TCP.
-We are not going to discuss again the result concerning \ws{} versus XHR long polling.
+Clients send a fixed-size chunk of random data to the server that simply sends it back to its respective client.
+Figure~\ref{fig:road} shows the average delays in receiving consecutive data chunks as a function of data chunk size.
+This experiment is conducted on a 3G cellular data network with three different \mbox{protocols :} XHR long polling, \ws{} and TCP.
+We are not going to discuss again the results concerning \ws{} versus XHR long polling.
 We can see that what other tests highlighted remain valid in this experiment.
-The result of TCP versus \ws{} are questioning.
+The results of TCP versus \ws{} are questioning.
 There is a factor 2-3 increase in delay when using \ws{} as compared to using raw TCP.
 Authors of this study conjectured that the reasons for this additional delay are due to additional buffering time at the client, more chatty protocols, and additional overhead.
 The first point is mentioned in the IETF HTML5 \ws{} specification ``the implementation MAY delay the actual transmission arbitrarily, e.g., buffering data so as to send fewer IP packets.'' \cite{rfc6455}.
 Also, we can notice that the standard deviation is larger for \ws{} compared to TCP.
 This standard deviation is called the jitter measurement in networking.
-Authors of \cite{roadblock} make another experiment to measure the jitter of each of these protocols.
+Authors of \cite{roadblock} made another experiment to measure the jitter of each of these protocols.
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{road_jitter.png}
@@ -238,7 +240,7 @@ Authors of \cite{roadblock} make another experiment to measure the jitter of eac
     \label{fig:road2}
 \end{figure}
 
-For doing this, they measured the delay between successive 256-byte chunk. 
+For doing this, they measured the delay between successive 256-byte chunk.
 The results are shown in figure~\ref{fig:road2}, in a cumulative distribution function.
 The figure shows that, with TCP, we can expect that more than 90\% of all data chunks will arrive at the client with an inter-chunk delay of 360ms or less. The corresponding numbers for \ws{} and XHR long polling are $760$ms and $1382$ms respectively.
 There is a performance gap between TCP and \ws{} protocol.
@@ -257,15 +259,15 @@ To better understand the reason of this gap, we must analyze the generated overh
 
 Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
 To do so, they used a new setup with a dummy network.
-This dummy network will be used to create a traffic-shaped network which restrict total egress bandwidth to 512kbit/sec and introduces a fixed latency of 50ms.
+This dummy network will be used to create a traffic-shaped network which restricts total egress \todo{What is egress?} bandwidth to 512kbit/sec and introduces a fixed latency of 50ms.
 It will also capture packets to compute the overhead.
 The rest of the setup is the same as before, the size of chunk is fixed and the web service is a simple echoing.
-In figure~\ref{fig:road4}, they have measured the overhead induces by varying the chunks size.
+In figure~\ref{fig:road4}, they have measured the overhead induced by varying the chunks size.
 As we can see, the overhead for XHR long polling is very important.
-For small chunk size, it can be up to ten time the size of the data.
+For small chunk size, it can be up to ten times the size of the data.
 This is easy to understand as XHR uses HTTP.
 Thus, the HTTP header is included in each request and response in XHR long polling.
-And the HTTP header size is unpredictable as it contains lot of superfluous information in our case as browser cookies.
+And the HTTP header size is unpredictable as it contains a lot of superfluous informations in our case, such as browser cookies.
 It explains why the overhead from the client to the server is more important than the overhead from the server to the client as the client is more likely to add unnecessary header.
 We can see that the overhead factor for \ws{} is more reasonable.
 This overhead is due to the header of the \ws{} protocol described in section~\ref{sec:ws-header}.
@@ -285,17 +287,17 @@ To do so, they used the same setup as described before (traffic-shaped network).
 The figure~\ref{fig:road3} shows the net throughput (amount of useful data received, stripped of protocol overhead, in kbits/s) at the client as a function of data chunk sizes.
 We can see that TCP performs better throughput than \ws{} and XHR long polling.
 For a 1kB chunks, TCP achieves a throughput of 78kbits/s as compared to 66kbits and 44 kbits/s in the case of \ws{} and XHR long polling respectively.
-We know that the throughput is dependent of the round trip time and the overhead, so there is no surprise to these results.
+We know that the throughput is dependent of the round trip time and the overhead, so these results are not surprising.
 
 In \cite{EV}, authors also analyzed the performance of \ws{} throughput for electric vehicles communicating with \ws{}.
-They have created an android application simulating an electric vehicle.
-The application use the 3G cellular data network to communicate with a server.
+They have created an Android application simulating an electric vehicle.
+The application uses the 3G cellular data network to communicate with a server.
 They conclude that \ws{} is inefficient in comparison to regular TCP as TCP requires 40\%-50\% less bit rate than \ws{} for their messages.
-The size of status message of their electric vehicles is about 500 bytes. 
+The size of status message of their electric vehicles is about 500 bytes.
 As the message is shorter, the overhead ratio is higher.
-These results are in agreement with previous.
-The authors highlight the fact that \ws{} can need keep-alive traffic to keep the connection open.
-The keep-alive can spend a lot of superfluous traffic, especially if the exchanged messages are small.
+These results are in agreement with the previous ones.
+The authors highlight the fact that \ws{} can need \ttt{keep-alive} traffic to keep the connection open.
+The \ttt{keep-alive} can spend a lot of superfluous traffic, especially if the exchanged messages are small.
 
 %To reduce network utilization, they invented three methods in order to aggregate the %data.
 %The first is time sampling, every T second, the EV sends informations.
@@ -311,25 +313,25 @@ As said in section~\ref{sec:ws}, \ws{} benefits from security model of the HTTP 
 
 \subsection{Same origin security}
 
-During the handshake, the browser adds the Origin header to the HTTP Upgrade request.
+During the handshake, the browser adds the \ttt{Origin} header to the HTTP Upgrade request.
 The server can accept or deny the request based on this header.
-Also, even if the origin is not the same, it is possible to establish a connection tanks to the Cross Origin Request Sharing (CORS) \cite{talkingtoyourself}.
+Also, even if the origin is not the same, it is possible to establish a connection thanks to the Cross Origin Request Sharing (CORS) \cite{talkingtoyourself}.
 The principle is the same as in HTTP.
 
 \subsection{Proxies and black boxes}
 \label{sec:key}
-As the web is the most common way for communicate on internet, there is a lot of proxies and black boxes that intercepts traffic going through port 80.
+As the web is the most common way to communicate on internet, there are a lot of proxies and black boxes that intercept the traffic going through port 80.
 Theses intermediaries might not understand what happens once the negotiation for \ws{} Upgrade is achieved.
-And this can be problematic..
-When a proxy or black box doesn't understand what happened, the traffic can be altered or discarded.
+And this can be problematic.
+When a proxy or black box does not understand what happened, the traffic can be altered or discarded.
 This will make the \ws{} communication unusable.
 This poses a problem for the progress of the adoption of the \ws s.
 
-But the most undesired behavior was that a proxy bufferise the \ws{} frames.
+But the most undesired behavior was that a proxy bufferised the \ws{} frames.
 As described in \cite{talkingtoyourself}, if a proxy is doing such a thing, an attacker can poison the cache of the proxy with malicious payload.
-When a legitimate user behind the proxy want to retrieve the \ws{}, he will get the malicious payload from the poisoned proxy's cache.
+When a legitimate user behind the proxy wants to retrieve the \ws{}, he will get the malicious payload from the poisoned proxy's cache.
 To counter this, a masking key is sent by the client, this key will be used by the server to mask the payload (masking key XOR payload).
-As the client know the masking key, it can decodes the payload and be sure that the payload wasn't modify by any proxies or black boxes. 
+As the client knows the masking key, it can decode the payload and be sure that the payload wasn't modified by any proxies or black boxes.
 This mechanism defeats the cache poisoning attack.
 
 \subsection{TLS}
@@ -340,7 +342,7 @@ As proxies and black boxes can do nothing with TLS communication, by ensuring th
 
 \section{Conclusion}
 In this paper, we covered the different solutions that were used prior to the \ws{}.
-These include HTTP polling and HTTP long-polling.
+These include XHR polling and XHR long-polling.
 Then, we introduced the \ws{}, which is composed by the \ws{} JavaScript API and the underlying \ws{} protocol.
 We saw that the \ws{} protocol was based on TCP.
 We presented how two hosts could connect to each other to create a \ws{} session.
@@ -352,6 +354,7 @@ However, it is still better than the alternative solutions, as XHR polling and X
 The overhead caused by the \ws{} is negligible for practical use, and for situations where a lot of data are sent between the client and the server, the cost of the initial HTTP handshaking is amortized by the large number of payload transfers.
 
 % Rajouter une conclusion sur les quelques points de sécurité abordés
+\todo{Talk about security}
 
 Finally, the \ws{} protocol is a useful addition to the Web, which brings a full-duplex communication that is more efficient than the other solutions which try to simulate an equivalent behavior in HTTP-based applications.
 
