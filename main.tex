@@ -321,7 +321,7 @@ The principle is the same as in HTTP.
 \subsection{Proxies and black boxes}
 \label{sec:key}
 As the web is the most common way to communicate on internet, there are a lot of proxies and black boxes that intercept the traffic going through port 80.
-Theses intermediaries might not understand what happens once the negotiation for \ws{} Upgrade is achieved.
+These intermediaries might not understand what happens once the negotiation for \ws{} Upgrade is achieved.
 And this can be problematic.
 When a proxy or black box does not understand what happened, the traffic can be altered or discarded.
 This will make the \ws{} communication unusable.
@@ -354,9 +354,10 @@ However, it is still better than the alternative solutions, as XHR polling and X
 The overhead caused by the \ws{} is negligible for practical use, and for situations where a lot of data are sent between the client and the server, the cost of the initial HTTP handshaking is amortized by the large number of payload transfers.
 
 % Rajouter une conclusion sur les quelques points de sécurité abordés
-\todo{Talk about security}
+From a security point of view, we saw the threats that existed and how \ws{} counters these.
+We also explained the importance of the Masking key in the \ws{} frames sent by the clients.
 
-Finally, the \ws{} protocol is a useful addition to the Web, which brings a full-duplex communication that is more efficient than the other solutions which try to simulate an equivalent behavior in HTTP-based applications.
+Finally, we can conclude this paper by stating that the \ws{} protocol is a useful addition to the Web, which brings a full-duplex communication that is more efficient than the other solutions which try to simulate an equivalent behavior in HTTP-based applications.
 
 \ifCLASSOPTIONcaptionsoff
   \newpage
