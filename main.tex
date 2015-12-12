@@ -196,7 +196,7 @@ In this experiment, the XHR without long polling always achieves higher latency.
 This is understandable given the fact the client has to periodically poll the server for new data.
 The comparison with XHR is not helpful and will not be considered.
 
-Figure~\ref{fig:comdisp}, from \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, presents three interesting communication behaviors.
+The figure~\ref{fig:comdisp} presents three interesting communication behaviors.
 Figure~\ref{fig:comdisp}a illustrates the \ws{} protocol behavior once it has successfully established the socket connection. Each time the server receives a measurement from the sensor, the server can immediately send the measurement to the client.
 Figure~\ref{fig:comdisp}b illustrates the XHR long polling behavior with an underlying latency low enough ($< 125 $ms, which corresponds to half the $250$ms observation rate) for the client to establish a poll request that the server will keep until it receives a new measurement from the sensor. % new measurementS, ou a new mea...
 Figure~\ref{fig:comdisp}c illustrates the XHR long polling behavior with an underlying latency higher than $125$ms.
@@ -225,14 +225,13 @@ This is explained by the fact that the whole experiment was conducted on a small
 \end{figure}
 
 These experiments show that \ws{} achieves better performance than XHR.
-But what about \ws{} versus plain TCP ?
-This experiment was conducted in \cite{roadblock}.
+
+Another experiment was conducted in \cite{roadblock} to compare \ws{} with plain TCP.
 The setup is a web application that is a simple data echo service.
 Clients send a fixed-size chunk of random data to the server that simply sends it back to its respective client.
 Figure~\ref{fig:road} shows the delays in receiving consecutive data chunks as a function of data chunk size. %the average delay (sans s) (y a bien qu'un delais qu'on mesure dont on fait la moyenne?)
 This experiment is conducted on a 3G cellular data network with three different \mbox{protocols :} XHR long polling, \ws{} and TCP.
-We are not going to rediscuss the results concerning \ws{} versus XHR long polling.
-We can see that which other tests highlighted remains valid in this experiment. % "we can see that what" pas bon "that which" mais si moyen de reformuler mieux.
+The results concerning \ws{} versus XHR long polling will not be discussed, as what the other tests highlighted remains valid in this experiment. % "we can see that what" pas bon "that which" mais si moyen de reformuler mieux.
 %The result of TCP versus \ws{} are questioning (QUESTIONABLE? QUESTIONED IN THIS PAPER?). -> questioned. 'fin j'imagine dépend de ce que tu veux dire.
 The delay is increased by a factor of 2-3 when using \ws{} as compared to raw TCP. % The delay is increased by a factor of
 Authors of this study conjectured that the reasons for these additional delays are due to additional buffering time, more chatty protocols, and additional overhead.
@@ -294,7 +293,7 @@ To do so, they used the same setup as described before (traffic-shaped network).
 The figure~\ref{fig:road3} shows the net throughput (amount of useful data received, stripped of protocol overhead, in kbits/s) at the client as a function of data chunk sizes.
 We can see that TCP performs better throughput than \ws{} and XHR long polling.
 For a 1kB chunk, TCP achieves a throughput of 78kbits/s as compared to 66kbits and 44 kbits/s in the case of \ws{} and XHR long polling respectively.
-We know that the throughput is dependent on the round trip time and the overhead, so these results are not surprising.
+As the throughput is dependent on the round trip time and the overhead, these results are not surprising.
 
 In \cite{EV}, authors also analyzed the performance of \ws{} throughput for electric vehicles communicating with \ws{}.
 They have created an Android application simulating an electric vehicle.
@@ -336,7 +335,7 @@ This triggers a problem for the adoption of the \ws s.  %juste le progres, sonne
 But the most undesired behavior happens when a proxy caches the \ws{} frames.
 As described in \cite{talkingtoyourself}, if a proxy is doing such a thing, an attacker can poison the cache of the proxy with malicious payload. %the proxy's cache, mais c'est bien comme ça
 When a legitimate user behind the proxy wants to retrieve the \ws{}, he will get the malicious payload from the poisoned proxy's cache.
-To counter this, a masking key is sent by the client within the header of \ws{}, this key will be used by the server to mask the payload by applying a xor operation between the masking key and the payload.
+To counter this, a masking key is sent by the client within the header of \ws{}, this key will be used by the server to mask the payload by applying a XOR operation between the masking key and the payload.
 As the client knows the masking key, it can decode the payload and be sure that the payload was not modified by any proxies or black boxes.
 This mechanism defeats the cache poisoning attack.
 
@@ -362,7 +361,8 @@ The overhead caused by the \ws{} is negligible for practical use, and for situat
 From a security point of view, we saw the threats that exist and how \ws{} counters these.
 We also explained the importance of the masking key in the \ws{} frames sent by the clients. %capital à Masking ici?
 
-Finally, we can conclude this paper by stating that the \ws{} protocol is a useful addition to the Web, which brings a full-duplex communication that is more efficient than the other solutions which try to simulate an equivalent behavior in HTTP-based applications.
+Finally, we can conclude this paper by stating that the \ws{} protocol is a useful addition to the Web.
+It brings a full-duplex communication that is more efficient than the other solutions which try to simulate an equivalent behavior in HTTP-based applications.
 
 \ifCLASSOPTIONcaptionsoff
   \newpage
