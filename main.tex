@@ -74,15 +74,20 @@ One of the first and most used solutions to add real-time interactivity is the X
 Despite the name of this API, the fetched resource does not have to be an XML file. %the resource is being fetched here and it sends a request above?
 In fact, JSON (JavaScript Object Notation) is generally used as it is easier to parse in Javascript \cite{collinalatency}.
 This technique is great to send data to the server but not for receiving new data.
-If the client wants to keep the information up to date from the server, it will have to poll the server periodically.
+Two techniques can be used to achieve this purpose: the periodic polling or the long polling.
+
+\subsection{The periodic polling}
+If the client wants to keep the information up to date from the server, it will poll the server periodically.
 This behavior generates a lot of overhead as each request and response will have a full HTTP header and a lot of those requests might return no new data. This technique thus proves to be quite ineffective. % overhead work/tasks/something? (ou rien si c'est habituel)
 
-\subsection{The long polling version}
+\subsection{The long polling}
 
 The XHR long polling exploits a loophole inside the \mbox{HTTP/1.1} specifications.
 After receiving an HTTP request, a web server is not required to respond immediately, it can defer the reply for a few instants \cite{collinalatency}.
 With this technique, the client does not have to poll the server periodically as the web server holds the HTTP request open until it has new data to send to the client, or until a timeout occurs.
 This reduces the amount of useless data transfers and improves the update delay.
+
+\subsection{Periodic vs long polling}
 
 \begin{figure}[!ht]
   \centering
@@ -91,14 +96,14 @@ This reduces the amount of useless data transfers and improves the update delay.
   \label{poll_vs_lpoll}
 \end{figure}
 
-In Fig.~\ref{poll_vs_lpoll}, on the left, the client periodically polls the server to retrieve updates. This is shown on the figure as the ``polling interval''. When an update occurs on the server side, the client has to wait for the next polling to become aware of it. On the right, with long polling, the server keeps the connection open until the update occurs. The periodic polling introduces a delay that long polling can avoid. Also, the first poll of the periodic polling is superfluous as it generates data on the network without any real new input. % pq polling au lieu de poll(s) parfois? the next poll, the first poll, ...
+In Fig.~\ref{poll_vs_lpoll}, on the left, the client periodically polls the server to retrieve updates. This is shown on the figure as the ``polling interval''. When an update occurs on the server side, the client has to wait for the next polling to become aware of it. On the right, with long polling, the server keeps the connection open until the update occurs. The periodic polling introduces a delay that long polling can avoid. Also, in this figure, we can see that periodic polling creates superfluous network trafic as the first poll doesn't give new input. % pq polling au lieu de poll(s) parfois? the next poll, the first poll, ...
 
 \section{\ws{} protocol}
 \label{sec:ws}
 The \ws{} protocol was standardized by the IETF as RFC 6455 in 2011 \cite{rfc6455}.
 This protocol was designed to bring bidirectional, message-oriented streaming of texts and binary data between web browsers and web servers.
 
-As it was designed for the Web, this protocol copes with existing HTTP infrastructures, which means working over HTTP ports 80 and 443.% "the existing HTTP infrastructure" or "existing HTTP infrastructureS", work over ports or on ports?
+As it was designed for the Web, this protocol copes with existing HTTP infrastructures, which means working over HTTP ports 80 and 443. % "the existing HTTP infrastructure" or "existing HTTP infrastructureS", work over ports or on ports?
 As the \ws{} protocol is backward compatible with the existing Web infrastructure, it inherits all its benefits. % virer le from, it inherits benefits from it.
 First of all, web browsers support the technology natively, including an origin-based security model. % Expliquer dans une section sécurité ?   
 The Web infrastructure provides URL-based endpoints, which allows to run multiple services on a single TCP port.
@@ -122,7 +127,7 @@ The \ws{} frame structure is composed of different parts \cite{HighPerfBrowserNe
 \begin{LaTeXdescription}    % 'description' environment doesn't display well for IEEEtran
     \item[FIN] indicates whether the frame is the final fragment of a message. % THE final fragment, there is only one per message I assume?
     \item[Opcode] indicates the type of the payload data: binary, textual, or protocol-level signaling (e.g. \ttt{close}, \ttt{ping}, \ttt{pong}).
-    \item[Mask] indicates whether the payload data is obfuscated (only for messages sent from the client to the server).
+    \item[Mask] indicates whether the payload data is obfuscated (only for messages sent from the client to the server). See section~\ref{sec:key} for more information.
     \item[Length] indicates the payload length. If this value lies between 0 and 125, this is the actual length.
                     If it is set to 126, the next 2 bytes represent a 16-bit unsigned integer indicating the frame length.
                     If it is set to 127, the next 8 bytes represent a 64-bit unsigned integer indicating the frame length.
@@ -146,10 +151,10 @@ As the \ws{} is a TCP-based protocol, it needs a TCP connection to be establishe
 As shown on figure \ref{fig:websocket_connection}, the first step is to create a TCP connection, whose handshaking needs three messages between the client and the server (three-way handshake).
 At this point, both have access to the plain TCP protocol and they can send application-specific data to each other.
 As it is designed to cope with existing HTTP infrastructure, the client is going to use HTTP to negotiate a switch from regular HTTP to the \ws{} protocol for the rest of the session. % as designed to cope ... chais pas ça sonne un peu étrange, je virerais le "as designed"... ou bien "as it is designed to cope"
-To do this, the \ws{} protocol uses the \mbox{HTTP/1.1} Upgrade header in the request message. %To do this, the ... uses au lieu de is -ing
+To do this, the \ws{} protocol uses the \ttt{\mbox{HTTP/1.1} Upgrade} header in the request message. %To do this, the ... uses au lieu de is -ing
 This header was designed to allow a client to upgrade from an insecure connection to a secure TLS connection. % to/in order to allow, from AN insecure connection
-\ws{} has extended the HTTP Upgrade flow with custom \ws{} headers to perform the negotiation \cite{HighPerfBrowserNetworking:websocket}.
-The client also negotiates a version of the \ws{} protocol to be used for the session. %to be used pas superflu? ou to be used for what?
+\ws{} has extended this header with custom \ws{} headers to perform the negotiation. For instance, the version of the \ws{} protocol to be used for the session will be negotiated during this process \cite{HighPerfBrowserNetworking:websocket}.
+
 If the server supports the \ws{} protocol, it replies with an HTTP response using the \ttt{101 Switching Protocols} status code. %with ... with, j'aurais mis with ... using ...
 At that point, the HTTP-based communication is finished. % at that point, ou from that point onwards (pas grave sinon)
 The connection can then be used as a two-way communication channel where the client and the server can exchange \ws{} messages.
