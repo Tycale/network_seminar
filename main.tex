@@ -174,9 +174,8 @@ As we saw in section~\ref{handshake}, establishing a \ws{} session requires at l
 The cost of \ws{} connection establishment was evaluated to be 3.7 times longer than a TCP connection \cite{performanceEvaluationOfWebsocketProtocol}.  % evaluated to be
 
 As observed in section~\ref{XHR}, XHR periodic polling and XHR long polling were the two most common methods to simulate a full-duplex connection.
-To determine whether \ws{} outperforms these, this section is going to inspect the latency and the throughput of each of these techniques.
-\ws{} having the advantage of being compatible in browsers, even if it runs over TCP, 
-it is interesting to see how \ws{} performs compared to a classical TCP connection.
+To determine whether \ws{} outperforms these, this section will inspect the latency and the throughput of each of these techniques.
+\ws{} having the advantage of being compatible with web browsers, even if it runs over TCP, it is interesting to see how \ws{} performs compared to a classical TCP connection.
 
 \subsection{Comparing the latency}
 
@@ -232,7 +231,7 @@ The setup is a web application that is a simple data echo service.
 Clients send a fixed-size chunk of random data to the server that simply sends it back to its respective client.
 Figure~\ref{fig:road} shows the delays in receiving consecutive data chunks as a function of data chunk size. %the average delay (sans s) (y a bien qu'un delais qu'on mesure dont on fait la moyenne?)
 This experiment is conducted on a 3G cellular data network with three different \mbox{protocols :} XHR long polling, \ws{} and TCP.
-The results concerning \ws{} versus XHR long polling will not be discussed, as the observations highlighted before remains valid. % "we can see that what" pas bon "that which" mais si moyen de reformuler mieux.
+The results concerning \ws{} versus XHR long polling will not be discussed, as the previous observations remain valid. % "we can see that what" pas bon "that which" mais si moyen de reformuler mieux.
 %The result of TCP versus \ws{} are questioning (QUESTIONABLE? QUESTIONED IN THIS PAPER?). -> questioned. 'fin j'imagine dépend de ce que tu veux dire.
 The delay is increased by a factor of 2-3 when using \ws{} as compared to raw TCP. % The delay is increased by a factor of
 Authors of this study conjectured that the reasons for these additional delays are due to additional buffering time, more chatty protocols, and additional overhead.
