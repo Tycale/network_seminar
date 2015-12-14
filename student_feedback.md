@@ -4,7 +4,7 @@
 
 ### Lessons learned
 * To improve:
-    - For the most part yes, the measurements and their explanations are clear and allow for the results to be easily reused by other researchers. However, I have trouble seeing the advantage of websockets over simple TCP. I suppose there are some, but they are never mentionned in the paper.
+    - Advantage of websockets over simple TCP. I suppose there are some, but they are never mentionned in the paper.
 
 ### Bibliography
 * To improve:
@@ -49,27 +49,13 @@
 
     - My only grief regarding the writing style is the (too frequent) use of the pronoun "we" (impersonal construction would imho have been better). Because of this, in the introduction of section 4 (Performance of websockets) it felt as if the students made the experiments that are explained in later sections. That impression was corrected right away in the next subsection (4.1) but still that felt a little awkward. My simple proposal to fix this would be to simply rephrase the last sentences in that paragraph and avoid the use of the pronoun 'we'.
 
-    - The writing style is sufficient, it is simple and all in all a pleasant read. There are a few typos here and there but nothing too bad.
-
-* Good:
-    - I found the organization of this text to be very clear, logical and easy to follow.
-
-
 ### Figures
 * To improve:
     - Maybe the Figure 2 illustrating the Websocket packet structure is useless in terms of understanding the text.
 
-    - The paper made good use of the figures that are mentioned in the paper. Usually, their use illustrates well the discussion but I would however either drop figure 7 or 8 since they convey the same message (the overhead diminishes with the chunk size, hence the throughput increases when the chunk size increases).
+    - I would however either drop figure 7 or 8 since they convey the same message (the overhead diminishes with the chunk size, hence the throughput increases when the chunk size increases).
 
-    - Figures overall are nicely used. Figures 1 through 4 are really good, they perfectly support the explanations while being simple and easy to understand. The following figures are less easy to read, in part due to a poor choice of colors in the plots. Really light colors such as the light green and blue being used make some figures such as 5 less comfortable to read for no reason. Maybe also add a little bit more space between both parts of figure 5, to have a cleaner cut between each text.
-
-* Good:
-    - Figures add value, enabling to understand more easily key concepts such as different polling methods and their efficiencies, and showing clear results.
-    - They are correctly explained in the text
-    - The paper provides enough figures.
-
-    - Each figure provides additional information and visual help to the reader for almost every technical part of the survey. This allows the reader to sharpen its understanding of the discussed subject. They are all deeply covered in the text and cover almost the whole paper. Further figures would not help a reader to have a better understanding of the survey, according to me, since the part not covered by figures are really clearly explained.
-
+    - Maybe also add a little bit more space between both parts of figure 5, to have a cleaner cut between each text.
 
 
 ### General
@@ -79,8 +65,3 @@
     - Overall I found this paper a pleasant read, concise, clear and to-the-point. Should the authors want to further improve the quality of their paper, I would suggest them to spend less time detailing the measurements observed in [7] and [8] and maybe mention one or several implementations of the web socket protocol that are available nowadays (the most famous of which are NodeJS/ws and socket.io). If those implementations are not fully compliant with the RFC6455, I think it would also be worth mentioning.
 
     - One thing that could be clearer though is the advantage(s) of WebSockets compared to TCP, as the survey right now leads readers to believe that TCP is strictly superior.
-
-* Good:
-    - But all in all, I found this paper interesting and I do believe it is a good introduction to the topic of WebSockets.
-
-    - Once again, this is a good paper. The structure, explanations and figures are all clear and easy to understand. Background is given whenever necessary so as to keep the reader up to level, and the conclusion does a good job of summarizing the important results discovered.

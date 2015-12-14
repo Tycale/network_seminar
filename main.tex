@@ -173,9 +173,10 @@ The connection can then be used as a two-way communication channel where the cli
 As we saw in section~\ref{handshake}, establishing a \ws{} session requires at least five messages.
 The cost of \ws{} connection establishment was evaluated to be 3.7 times longer than a TCP connection \cite{performanceEvaluationOfWebsocketProtocol}.  % evaluated to be
 
-As observed in section~\ref{XHR}, XHR and XHR long polling were the two most common methods to simulate a full-duplex connection.
-To determine whether \ws{} outperforms these, we are going to inspect the latency and the throughput of each of these techniques.
-Moreover, we are going to see how good \ws{} performs compared to TCP. %the two most common methods to ... (pas besoin de used), how good \ws does/performs pas besoin de -ing :p
+As observed in section~\ref{XHR}, XHR periodic polling and XHR long polling were the two most common methods to simulate a full-duplex connection.
+To determine whether \ws{} outperforms these, this section is going to inspect the latency and the throughput of each of these techniques.
+\ws{} having the advantage of being compatible in browsers, even if it runs over TCP, 
+it is interesting to see how \ws{} performs compared to a classical TCP connection.
 
 \subsection{Comparing the latency}
 
@@ -186,15 +187,15 @@ Moreover, we are going to see how good \ws{} performs compared to TCP. %the two 
     \label{fig:comdisp}
 \end{figure*}
 
-The experimentation compares \ws{}, XHR and XHR long polling with different latencies in the underlying link.
+The experimentation compares \ws{}, XHR (periodic polling) and XHR long polling with different latencies in the underlying link.
 
-In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, the researchers imagine an experiment to measure the latency induced by the use of \ws{} compared to XHR and XHR long polling.
-The server receives weather information every 250 ms from a wind sensor and serves it via several ways (WS, XHR and XHR LP).
+In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, the researchers imagine an experiment to measure the latency induced by the use of \ws{} compared to XHR periodic polling and XHR long polling.
+The server receives weather information every 250 ms from a wind sensor and serves it via several ways (WS, XHR PP and XHR LP).
 To compare the latency, clients and servers are synchronized.
 
 In this experiment, the XHR without long polling always achieves higher latency.
 This is understandable given the fact the client has to periodically poll the server for new data.
-The comparison with XHR is not helpful and will not be considered.
+The comparison with XHR periodic polling is not helpful and will not be considered as it performs poor results.
 
 The figure~\ref{fig:comdisp} presents three interesting communication behaviors.
 Figure~\ref{fig:comdisp}a illustrates the \ws{} protocol behavior once it has successfully established the socket connection. Each time the server receives a measurement from the sensor, the server can immediately send the measurement to the client.
@@ -204,7 +205,7 @@ The client first polls the server, the request arrives at the server before or a
 When a measurement is available, the server sends the message immediately from the sensor to the client, which closes the connection.
 Thus, when the server receives a new poll request from the client, at least one sensor is in the client's queue.
 The observed latency is greater than the underlying link.
-The long polling is a viable situation as long as the underlying latency is less than half the data measurement rate.
+As we can see, the long polling is only a viable situation as long as the underlying latency is less than half the data measurement rate.
 In  situations (a) and (b) of the figure~\ref{fig:comdisp}, the observed latency is the underlying latency, meaning that XHR long polling can perform as good as \ws{}.
 
 
@@ -231,7 +232,7 @@ The setup is a web application that is a simple data echo service.
 Clients send a fixed-size chunk of random data to the server that simply sends it back to its respective client.
 Figure~\ref{fig:road} shows the delays in receiving consecutive data chunks as a function of data chunk size. %the average delay (sans s) (y a bien qu'un delais qu'on mesure dont on fait la moyenne?)
 This experiment is conducted on a 3G cellular data network with three different \mbox{protocols :} XHR long polling, \ws{} and TCP.
-The results concerning \ws{} versus XHR long polling will not be discussed, as what the other tests highlighted remains valid in this experiment. % "we can see that what" pas bon "that which" mais si moyen de reformuler mieux.
+The results concerning \ws{} versus XHR long polling will not be discussed, as the observations highlighted before remains valid. % "we can see that what" pas bon "that which" mais si moyen de reformuler mieux.
 %The result of TCP versus \ws{} are questioning (QUESTIONABLE? QUESTIONED IN THIS PAPER?). -> questioned. 'fin j'imagine dépend de ce que tu veux dire.
 The delay is increased by a factor of 2-3 when using \ws{} as compared to raw TCP. % The delay is increased by a factor of
 Authors of this study conjectured that the reasons for these additional delays are due to additional buffering time, more chatty protocols, and additional overhead.
@@ -246,13 +247,10 @@ Authors of \cite{roadblock} made another experiment to measure the jitter of eac
     \label{fig:road2}
 \end{figure}
 
-To do this, they measured the delay between successive 256-byte chunks. %to do this
-The results are shown in figure~\ref{fig:road2}, in a cumulative distribution function.
-The figure shows that, with TCP, we can expect that over 90\% of all data chunks will arrive at the client with an inter-chunk delay of 360ms or less. The corresponding numbers for \ws{} and XHR long polling are $760$ms and $1382$ms respectively. %over 90% au lieu de more than est plus lisible
+The measured delay between successive 256-byte chunks are shown in figure~\ref{fig:road2}, in a cumulative distribution function.
+With raw TCP, we can expect that over 90\% of all data chunks will arrive at the client with an inter-chunk delay of 360ms or less. The corresponding numbers for \ws{} and XHR long polling are $760$ms and $1382$ms respectively.
 There is a performance gap between TCP and \ws{} protocol.
-This phenomenon is accentuated by the fact that the size of the chunks is small.
-As the transmission delay is short for small chunks, the main factor of the latency depends on the underlying latency and the processing time of protocols.
-To better understand the reason of this gap, we must analyze the generated overhead.
+As the transmission delay is short for small chunks, the main factor of the latency depends on the processing time of protocols.
 
 \subsection{Comparing overhead and throughput}
 
@@ -264,11 +262,10 @@ To better understand the reason of this gap, we must analyze the generated overh
 \end{figure}
 
 Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
-To do so, they used a new setup with a dummy network. % bieeenn, pas de "for doing this" pour une fois :D => :3
-This dummy network will be used to create a traffic-shaped network which restricts total egress bandwidth to 512kbit/sec and introduces a fixed latency of 50ms.
-It will also capture packets to compute the overhead.
-The rest of the setup is the same as before, the size of the chunks is fixed and the web service is a simple echoing.
-In figure~\ref{fig:road4}, they have measured the overhead induced by varying the chunks size. %pas faux, mais pas besoin du "s" au chunks
+The setup is made with a dummy network, used to create a traffic-shaped network which restricts total egress bandwidth to 512kbit/sec and introduces a fixed latency of 50ms.
+The setup also captures packets to compute the overhead.
+The size of the chunks is fixed and the web service is a simple echoing.
+The figure~\ref{fig:road4} shows the overhead induced by varying the chunks size. %pas faux, mais pas besoin du "s" au chunks
 As we can see, the overhead for XHR long polling is very important.
 For small chunks, it can be up to ten times the size of the data. % small chunk sizes
 This is easy to understand as XHR uses HTTP.
@@ -280,7 +277,6 @@ This overhead is due to the header of the \ws{} protocol described in section~\r
 For a chunk of 256 bytes transmitted from the client to the server, the XHR long polling imposes a large overhead factor of up to 5 times the size of the chunk, Whereas the overhead factor of \ws{} is at 1.16. %5 times what ? 5 times the the chunk?
  % Whereas
 
-
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{road3.png}
@@ -288,22 +284,22 @@ For a chunk of 256 bytes transmitted from the client to the server, the XHR long
     \label{fig:road3}
 \end{figure}
 
-Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
-To do so, they used the same setup as described before (traffic-shaped network).
+Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to raw TCP and XHR long polling.
+The same setup as described before (traffic-shaped network) is used.
 The figure~\ref{fig:road3} shows the net throughput (amount of useful data received, stripped of protocol overhead, in kbits/s) at the client as a function of data chunk sizes.
 We can see that TCP performs better throughput than \ws{} and XHR long polling.
 For a 1kB chunk, TCP achieves a throughput of 78kbits/s as compared to 66kbits and 44 kbits/s in the case of \ws{} and XHR long polling respectively.
 As the throughput is dependent on the round trip time and the overhead, these results are not surprising.
 
 In \cite{EV}, authors also analyzed the performance of \ws{} throughput for electric vehicles communicating with \ws{}.
-They have created an Android application simulating an electric vehicle.
+To do so, \cite{EV} have created an Android application simulating an electric vehicle.
 The application uses the 3G cellular data network to communicate with a server.
 They conclude that \ws{} is inefficient in comparison to regular TCP as TCP requires 40\%-50\% less bit rate than \ws{} for their messages.
 The size of the status messages of their electric vehicles is of about 500 bytes.
 As the message is shorter, the overhead ratio is higher.
 These results are in agreement with the previous ones.
 The authors highlight the fact that \ws{} may require keepalive traffic to keep the connection open due to the policy of some proxies. % can need? needs ou may need (et je mettrais require, pas need)
-These keepalive messages can use a lot of unnecessary traffic, especially if the  amount of data exchanged is low. %These ... can use a lot of unnecessary traffic (ils dépensent rien, ils utilisent, c'est toi qui dépense :p)
+These keepalive messages can use a lot of unnecessary traffic, especially if the amount of data exchanged is low. %These ... can use a lot of unnecessary traffic (ils dépensent rien, ils utilisent, c'est toi qui dépense :p)
 
 %To reduce network utilization, they invented three methods in order to aggregate the %data.
 %The first is time sampling, every T second, the EV sends informations.
@@ -339,7 +335,7 @@ To counter this, a masking key is sent by the client within the header of \ws{},
 As the client knows the masking key, it can decode the payload and be sure that the payload was not modified by any proxies or black boxes.
 This mechanism defeats the cache poisoning attack.
 
-\subsection{TLS}
+\subsection{TLS (Transport Layer Security)}
 \ws{} supports TLS.
 This is useful to cipher payload but not only as proxies and black boxes can do nothing with TLS communication, by ensuring that a website is using secure \ws{}, it also ensures that no proxy or black box will prevent the connection.
 
