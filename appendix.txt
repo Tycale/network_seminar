@@ -1,0 +1,7 @@
+Appendix
+--------
+
+According to the feedback we received from the reviewers, we completed the
+bibliography and the citations with more precise information.
+We improved the structure of the paper and the writing style.
+We also added some complementary notes regarding TCP and WebSockets.
