@@ -188,7 +188,7 @@ To determine whether \ws{} outperforms these, this section will inspect the late
 
 The experimentation compares \ws{}, XHR (periodic polling) and XHR long polling with different latencies in the underlying link.
 
-In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, the researchers imagine an experiment to measure the latency induced by the use of \ws{} compared to XHR periodic polling and XHR long polling.
+In \cite{communicationAndDIsplayingRealTimeDataWithWebSocket}, the researchers imagined an experiment to measure the latency induced by the use of \ws{} compared to XHR periodic polling and XHR long polling.
 The server receives weather information every 250 ms from a wind sensor and serves it via several ways (WS, XHR PP and XHR LP).
 To compare the latency, clients and servers are synchronized.
 
@@ -260,7 +260,7 @@ As the transmission delay is short for small chunks, the main factor of the late
     \label{fig:road4}
 \end{figure}
 
-Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
+Agarwal \cite{roadblock} also studied the throughput of the \ws{} compared to TCP and XHR long polling.
 The setup is made with a dummy network, used to create a traffic-shaped network which restricts total egress bandwidth to 512kbit/sec and introduces a fixed latency of 50ms.
 The setup also captures packets to compute the overhead.
 The size of the chunks is fixed and the web service is a simple echoing.
@@ -283,14 +283,14 @@ For a chunk of 256 bytes transmitted from the client to the server, the XHR long
     \label{fig:road3}
 \end{figure}
 
-Authors of \cite{roadblock} also studied the throughput of the \ws{} compared to raw TCP and XHR long polling.
+Argawal \cite{roadblock} also studied the throughput of the \ws{} compared to raw TCP and XHR long polling.
 The same setup as described before (traffic-shaped network) is used.
 The figure~\ref{fig:road3} shows the net throughput (amount of useful data received, stripped of protocol overhead, in kbits/s) at the client as a function of data chunk sizes.
 We can see that TCP performs better throughput than \ws{} and XHR long polling.
 For a 1kB chunk, TCP achieves a throughput of 78kbits/s as compared to 66kbits and 44 kbits/s in the case of \ws{} and XHR long polling respectively.
 As the throughput is dependent on the round trip time and the overhead, these results are not surprising.
 
-In \cite{EV}, authors also analyzed the performance of \ws{} throughput for electric vehicles communicating with \ws{}.
+Perez and Nurminen \cite{EV} also analyzed the performance of \ws{} throughput for electric vehicles communicating with \ws{}.
 To do so, \cite{EV} have created an Android application simulating an electric vehicle.
 The application uses the 3G cellular data network to communicate with a server.
 They conclude that \ws{} is inefficient in comparison to regular TCP as TCP requires 40\%-50\% less bit rate than \ws{} for their messages.
